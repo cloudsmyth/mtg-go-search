@@ -98,6 +98,8 @@ func initialModel() model {
 	return model{
 		textInput: ti,
 		mode:      searchView,
+		width:     80,
+		height:    24,
 	}
 }
 
@@ -108,8 +110,13 @@ func (m model) Init() tea.Cmd {
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
-		m.width = msg.Width
-		m.height = msg.Height
+		if msg.Width != m.width || msg.Height != m.height {
+			m.width = msg.Width
+			m.height = msg.Height
+			if m.mode == resultsView {
+				m.list.SetSize(m.width, m.height-10)
+			}
+		}
 		return m, nil
 
 	case tea.KeyMsg:
@@ -346,7 +353,11 @@ func searchCards(query string) tea.Cmd {
 }
 
 func main() {
-	p := tea.NewProgram(initialModel(), tea.WithAltScreen())
+	opts := []tea.ProgramOption{
+		tea.WithAltScreen(),
+		tea.WithInput(os.Stdin),
+	}
+	p := tea.NewProgram(initialModel(), opts...)
 	if _, err := p.Run(); err != nil {
 		fmt.Printf("Error: %v\n", err)
 		os.Exit(1)
