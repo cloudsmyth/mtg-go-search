@@ -34,12 +34,9 @@ go build
 ## Usage
 
 ```bash
-# Search for a card by name
-./card-search-go "Lightning Bolt"
-
-# Search with partial name
-./card-search-go "Black Lotus"
+./card-search-go
 ```
+This will start the program and drop you into the BubbleTea TUI experience.
 
 ## Future Improvements
 
